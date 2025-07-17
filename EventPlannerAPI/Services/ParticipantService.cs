@@ -63,9 +63,10 @@ public class ParticipantService : IParticipantService
         if (user == null) return false;
 
         // Vérifier si l'utilisateur peut rejoindre l'événement
-        var canJoin = eventEntity.IsPublic || 
+        var canJoin = !eventEntity.IsPrivate || 
                      eventEntity.CreatorId == userId ||
-                     (inviteEmail != null && eventEntity.Participants.Any(p => p.Email == inviteEmail));
+                     (inviteEmail != null && eventEntity.Participants.Any(p => p.Email == inviteEmail)) ||
+                     eventEntity.InvitedEmails.Contains(user.Email); // Vérifier si l'email de l'utilisateur est dans les invités
 
         if (!canJoin) return false;
 
@@ -133,11 +134,20 @@ public class ParticipantService : IParticipantService
         if (eventEntity == null) return new List<ParticipantDto>();
 
         // Vérifier que l'utilisateur a accès à l'événement
-        var hasAccess = eventEntity.IsPublic || 
-                       eventEntity.CreatorId == userId || 
-                       eventEntity.Participants.Any(p => p.UserId == userId);
+        if (eventEntity.IsPrivate)
+        {
+            // Récupérer l'email de l'utilisateur pour vérifier les invitations
+            var userEmail = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
 
-        if (!hasAccess) return new List<ParticipantDto>();
+            var hasAccess = eventEntity.CreatorId == userId || 
+                           eventEntity.Participants.Any(p => p.UserId == userId) ||
+                           (userEmail != null && eventEntity.InvitedEmails.Contains(userEmail));
+            
+            if (!hasAccess) return new List<ParticipantDto>();
+        }
 
         return eventEntity.Participants.Select(p => new ParticipantDto
         {

@@ -17,6 +17,10 @@ public class CreateEventDto
     public TimeOnly Time { get; set; }
     
     public bool IsPublic { get; set; } = true;
+    
+    public bool IsPrivate { get; set; } = false;
+    
+    public List<string> InvitedEmails { get; set; } = new List<string>();
 }
 
 public class UpdateEventDto
@@ -31,6 +35,10 @@ public class UpdateEventDto
     public TimeOnly? Time { get; set; }
     
     public bool? IsPublic { get; set; }
+    
+    public bool? IsPrivate { get; set; }
+    
+    public List<string>? InvitedEmails { get; set; }
 }
 
 public class EventDto
@@ -40,7 +48,9 @@ public class EventDto
     public string Description { get; set; } = string.Empty;
     public DateOnly Date { get; set; }
     public TimeOnly Time { get; set; }
-    public bool IsPublic { get; set; }
+    public bool IsPublic { get; set; } = true;
+    public bool IsPrivate { get; set; }
+    public List<string> InvitedEmails { get; set; } = new List<string>();
     public int CreatorId { get; set; }
     public UserDto Creator { get; set; } = null!;
     public DateTime CreatedAt { get; set; }

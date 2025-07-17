@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace EventPlannerAPI.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 [Produces("application/json")]
 [Tags("Authentication")]
 public class AuthController : ControllerBase

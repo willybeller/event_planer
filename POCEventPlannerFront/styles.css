@@ -1,0 +1,253 @@
+/* Event Planner Custom Styles */
+
+/* Classes utilitaires personnalisées */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Animations personnalisées */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Styles pour les cartes d'événements */
+.event-card {
+    transition: all 0.3s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles pour les badges de statut */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.status-organizer {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-participant {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-past {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* Styles pour les alertes */
+.alert-enter {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.alert-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.3s ease-out;
+}
+
+.alert-exit {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.alert-exit-active {
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-in;
+}
+
+/* Styles pour les modals */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+/* Amélioration des formulaires */
+.form-input:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+/* Styles pour les boutons de chargement */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+        max-height: calc(100vh - 2rem);
+    }
+    
+    .event-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Amélioration de l'accessibilité */
+.focus-visible:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Styles pour les transitions Alpine.js */
+[x-cloak] {
+    display: none !important;
+}
+
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+/* Amélioration des cards avec des bordures subtiles */
+.card-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+}
+
+.card-gradient:hover {
+    border-color: #cbd5e1;
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+}
+
+/* Styles pour les icônes */
+.icon-primary {
+    color: #3b82f6;
+}
+
+.icon-success {
+    color: #10b981;
+}
+
+.icon-warning {
+    color: #f59e0b;
+}
+
+.icon-danger {
+    color: #ef4444;
+}
+
+/* Amélioration des champs de recherche */
+.search-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z'/%3e%3c/svg%3e");
+    background-position: left 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+    padding-left: 2.5rem;
+}
+
+/* Styles pour les badges de notification */
+.notification-badge {
+    position: relative;
+}
+
+.notification-badge::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* Amélioration des tooltips */
+.tooltip {
+    position: relative;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #1f2937;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .card-gradient {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        border-color: #374151;
+        color: #f9fafb;
+    }
+    
+    .card-gradient:hover {
+        border-color: #4b5563;
+        background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    }
+}

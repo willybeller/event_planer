@@ -2,6 +2,7 @@ using EventPlannerAPI.Data;
 using EventPlannerAPI.DTOs;
 using EventPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace EventPlannerAPI.Services;
 
@@ -22,7 +23,9 @@ public class EventService : IEventService
             Description = createEventDto.Description,
             Date = createEventDto.Date,
             Time = createEventDto.Time,
-            IsPublic = createEventDto.IsPublic,
+            IsPrivate = createEventDto.IsPrivate,
+            IsPublic = !createEventDto.IsPrivate, // Synchroniser avec IsPrivate
+            InvitedEmails = createEventDto.InvitedEmails.Count > 0 ? JsonSerializer.Serialize(createEventDto.InvitedEmails) : string.Empty,
             CreatorId = creatorId,
             CreatedAt = DateTime.UtcNow
         };
@@ -57,16 +60,23 @@ public class EventService : IEventService
 
         if (userId.HasValue)
         {
-            // Retourner les événements publics + ceux où l'utilisateur est invité + ceux créés par l'utilisateur
+            // Récupérer l'email de l'utilisateur connecté pour vérifier les invitations
+            var userEmail = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
+
+            // Retourner les événements publics + ceux créés par l'utilisateur + ceux où l'utilisateur est participant + ceux où l'utilisateur est invité
             query = query.Where(e => 
-                e.IsPublic || 
+                !e.IsPrivate || 
                 e.CreatorId == userId || 
-                e.Participants.Any(p => p.UserId == userId));
+                e.Participants.Any(p => p.UserId == userId) ||
+                (userEmail != null && e.InvitedEmails.Contains(userEmail)));
         }
         else
         {
             // Retourner seulement les événements publics si pas connecté
-            query = query.Where(e => e.IsPublic);
+            query = query.Where(e => !e.IsPrivate);
         }
 
         var events = await query.OrderBy(e => e.Date).ThenBy(e => e.Time).ToListAsync();
@@ -85,13 +95,20 @@ public class EventService : IEventService
         if (eventEntity == null) return null;
 
         // Vérifier les permissions d'accès
-        if (!eventEntity.IsPublic && userId.HasValue)
+        if (eventEntity.IsPrivate && userId.HasValue)
         {
+            // Récupérer l'email de l'utilisateur pour vérifier les invitations
+            var userEmail = await _context.Users
+                .Where(u => u.Id == userId)
+                .Select(u => u.Email)
+                .FirstOrDefaultAsync();
+
             var hasAccess = eventEntity.CreatorId == userId || 
-                           eventEntity.Participants.Any(p => p.UserId == userId);
+                           eventEntity.Participants.Any(p => p.UserId == userId) ||
+                           (userEmail != null && eventEntity.InvitedEmails.Contains(userEmail));
             if (!hasAccess) return null;
         }
-        else if (!eventEntity.IsPublic && !userId.HasValue)
+        else if (eventEntity.IsPrivate && !userId.HasValue)
         {
             return null; // Événement privé et utilisateur non connecté
         }
@@ -120,8 +137,20 @@ public class EventService : IEventService
         if (updateEventDto.Time.HasValue)
             eventEntity.Time = updateEventDto.Time.Value;
         
+        if (updateEventDto.IsPrivate.HasValue)
+        {
+            eventEntity.IsPrivate = updateEventDto.IsPrivate.Value;
+            eventEntity.IsPublic = !updateEventDto.IsPrivate.Value; // Synchroniser
+        }
+        
         if (updateEventDto.IsPublic.HasValue)
+        {
             eventEntity.IsPublic = updateEventDto.IsPublic.Value;
+            eventEntity.IsPrivate = !updateEventDto.IsPublic.Value; // Synchroniser
+        }
+        
+        if (updateEventDto.InvitedEmails != null)
+            eventEntity.InvitedEmails = updateEventDto.InvitedEmails.Count > 0 ? JsonSerializer.Serialize(updateEventDto.InvitedEmails) : string.Empty;
 
         await _context.SaveChangesAsync();
         
@@ -146,6 +175,19 @@ public class EventService : IEventService
         var userParticipation = userId.HasValue ? 
             eventEntity.Participants.FirstOrDefault(p => p.UserId == userId) : null;
 
+        var invitedEmails = new List<string>();
+        if (!string.IsNullOrEmpty(eventEntity.InvitedEmails))
+        {
+            try
+            {
+                invitedEmails = JsonSerializer.Deserialize<List<string>>(eventEntity.InvitedEmails) ?? new List<string>();
+            }
+            catch
+            {
+                invitedEmails = new List<string>();
+            }
+        }
+
         return new EventDto
         {
             Id = eventEntity.Id,
@@ -154,6 +196,8 @@ public class EventService : IEventService
             Date = eventEntity.Date,
             Time = eventEntity.Time,
             IsPublic = eventEntity.IsPublic,
+            IsPrivate = eventEntity.IsPrivate,
+            InvitedEmails = invitedEmails,
             CreatorId = eventEntity.CreatorId,
             Creator = new UserDto
             {
