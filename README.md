@@ -235,29 +235,25 @@ http://localhost:5021/swagger
 ### 📅 Événement
 
 ```json
-
 {
-
-"id": 1,
-
-"title": "Conférence Tech 2024",
-
-"description": "Conférence sur les dernières technologies",
-
-"date": "2024-06-15T14:30:00Z",
-
-"location": "Centre de conférences, Paris",
-
-"maxParticipants": 100,
-
-"isPublic": true,
-
-"creatorId": 1,
-
-"participants": []
-
+  "id": 1,
+  "title": "Conférence Tech 2024",
+  "description": "Conférence sur les dernières technologies",
+  "date": "2024-06-15",
+  "time": "14:30:00",
+  "isPublic": true,
+  "creatorId": 1,
+  "creator": {
+    "id": 1,
+    "name": "Jean Dupont",
+    "email": "jean@example.com",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  "createdAt": "2024-01-15T10:30:00Z",
+  "participants": [],
+  "isCurrentUserAdmin": false,
+  "currentUserRsvpStatus": null
 }
-
 ```
 
   
@@ -265,28 +261,53 @@ http://localhost:5021/swagger
 ### 👥 Participant
 
 ```json
-
 {
-
-"email": "participant@example.com",
-
-"rsvpStatus": "yes",
-
-"isAdmin": false,
-
-"user": {
-
-"id": 2,
-
-"name": "Marie Martin"
-
+  "id": 1,
+  "email": "participant@example.com",
+  "user": {
+    "id": 2,
+    "name": "Marie Martin",
+    "email": "marie@example.com",
+    "createdAt": "2024-01-15T10:30:00Z"
+  },
+  "rsvpStatus": "yes",
+  "isAdmin": false,
+  "createdAt": "2024-01-15T10:30:00Z"
 }
-
-}
-
 ```
 
-  
+### 📝 Données pour créer un événement
+
+```json
+{
+  "title": "Mon événement",
+  "description": "Description de l'événement",
+  "date": "2024-12-25",
+  "time": "15:00:00",
+  "isPublic": true
+}
+```
+
+### 🔄 Données pour modifier le statut RSVP
+
+```json
+{
+  "status": "yes"
+}
+```
+
+*Valeurs possibles : `"yes"`, `"no"`, `"maybe"`*
+
+## ⚠️ Notes importantes
+
+### Format de date et heure
+- **Date** : Format `YYYY-MM-DD` (ex: `"2024-12-25"`)
+- **Heure** : Format `HH:MM:SS` (ex: `"15:00:00"`)
+- Les dates et heures sont séparées contrairement à l'ISO 8601
+
+### Champs optionnels vs obligatoires
+- **Obligatoires** pour créer un événement : `title`, `date`, `time`
+- **Optionnels** : `description`, `isPublic` (défaut: `true`)
 
 ## 🔑 Authentification JWT
 
@@ -469,27 +490,15 @@ curl  -X  POST  "http://localhost:5021/api/auth/signup"  \
 ### Créer un événement
 
 ```bash
-
-curl  -X  POST  "http://localhost:5021/api/events"  \
-
+curl -X POST "http://localhost:5021/api/events" \
 -H "Authorization: Bearer {votre-token}" \
-
--H  "Content-Type: application/json"  \
-
+-H "Content-Type: application/json" \
 -d '{
-
-"title":  "Mon événement",
-
-"description":  "Description de l événement",
-
-"date":  "2024-12-25T15:00:00Z",
-
-"location":  "Paris",
-
-"maxParticipants":  50,
-
-"isPublic":  true
-
+  "title": "Mon événement",
+  "description": "Description de l événement",
+  "date": "2024-12-25",
+  "time": "15:00:00",
+  "isPublic": true
 }'
 
 ```
