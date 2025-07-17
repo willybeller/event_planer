@@ -83,9 +83,9 @@ Une API complète pour la gestion d'événements avec authentification JWT, dév
 
 ```bash
 
-git clone https://github.com/willybeller/event_planer.git
+git clone https://github.com/willybeller/event_planner.git
 
-cd event_planer/EventPlannerAPI
+cd event_planner/EventPlannerAPI
 
 ```
 
@@ -177,55 +177,34 @@ http://localhost:5021/swagger
 
 ### 🔐 Authentification
 
-  
-
-| Endpoint | Méthode | Description |
-
-|----------|---------|-------------|
-
-| `/api/auth/signup` | POST | Inscription d'un nouvel utilisateur |
-
-| `/api/auth/login` | POST | Connexion utilisateur |
-
-| `/api/auth/me` | GET | Profil de l'utilisateur connecté |
+| Endpoint           | Méthode | Description                           |
+|--------------------|---------|---------------------------------------|
+| `/api/auth/signup` | POST    | Inscription d'un nouvel utilisateur  |
+| `/api/auth/login`  | POST    | Connexion utilisateur                 |
+| `/api/auth/me`     | GET     | Profil de l'utilisateur connecté      |
 
   
 
 ### 📅 Événements
 
-  
-
-| Endpoint | Méthode | Description | Auth |
-
-|----------|---------|-------------|------|
-
-| `/api/events` | GET | Liste des événements | ❌ |
-
-| `/api/events` | POST | Créer un événement | ✅ |
-
-| `/api/events/{id}` | GET | Détails d'un événement | ❌ |
-
-| `/api/events/{id}` | PUT | Modifier un événement | ✅ |
-
-| `/api/events/{id}` | DELETE | Supprimer un événement | ✅ |
+| Endpoint           | Méthode | Description                 | Auth |
+|--------------------|---------|-----------------------------|----- |
+| `/api/events`      | GET     | Liste des événements       | ❌   |
+| `/api/events`      | POST    | Créer un événement         | ✅   |
+| `/api/events/{id}` | GET     | Détails d'un événement     | ❌   |
+| `/api/events/{id}` | PUT     | Modifier un événement      | ✅   |
+| `/api/events/{id}` | DELETE  | Supprimer un événement     | ✅   |
 
   
 
 ### 👥 Participants
 
-  
-
-| Endpoint | Méthode | Description | Auth |
-
-|----------|---------|-------------|------|
-
-| `/api/events/{id}/invite` | POST | Inviter un participant | ✅ |
-
-| `/api/events/{id}/join` | POST | Rejoindre un événement | ✅ |
-
-| `/api/events/{id}/rsvp` | PATCH | Modifier son statut RSVP | ✅ |
-
-| `/api/events/{id}/participants` | GET | Liste des participants | ✅ |
+| Endpoint                        | Méthode | Description                   | Auth |
+|---------------------------------|---------|-------------------------------|----- |
+| `/api/events/{id}/invite`       | POST    | Inviter un participant        | ✅   |
+| `/api/events/{id}/join`         | POST    | Rejoindre un événement       | ✅   |
+| `/api/events/{id}/rsvp`         | PATCH   | Modifier son statut RSVP      | ✅   |
+| `/api/events/{id}/participants` | GET     | Liste des participants        | ✅   |
 
   
 
@@ -427,19 +406,12 @@ EventPlannerAPI/
 
 ## 🚦 Statuts RSVP
 
-  
-
-| Statut | Description |
-
-|--------|-------------|
-
+| Statut    | Description                                    |
+|-----------|------------------------------------------------|
 | `pending` | En attente de réponse (nouvelles invitations) |
-
-| `yes` | Participera à l'événement |
-
-| `no` | Ne participera pas |
-
-| `maybe` | Participation incertaine |
+| `yes`     | Participera à l'événement                      |
+| `no`      | Ne participera pas                             |
+| `maybe`   | Participation incertaine                       |
 
   
 
@@ -463,7 +435,7 @@ EventPlannerAPI/
 
 Pour tester l'API :
 
- **Swagger UI** : Interface interactive à `http://localhost:5000/swagger`
+ **Swagger UI** : Interface interactive à `http://localhost:5021/swagger`
 
 
   
@@ -476,7 +448,7 @@ Pour tester l'API :
 
 ```bash
 
-curl  -X  POST  "http://localhost:5000/api/auth/signup"  \
+curl  -X  POST  "http://localhost:5021/api/auth/signup"  \
 
 -H "Content-Type: application/json" \
 
@@ -498,7 +470,7 @@ curl  -X  POST  "http://localhost:5000/api/auth/signup"  \
 
 ```bash
 
-curl  -X  POST  "http://localhost:5000/api/events"  \
+curl  -X  POST  "http://localhost:5021/api/events"  \
 
 -H "Authorization: Bearer {votre-token}" \
 
